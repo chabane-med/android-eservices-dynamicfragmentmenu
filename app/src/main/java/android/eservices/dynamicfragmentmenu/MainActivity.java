@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -25,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
     private SelectableNavigationView navigationView;
     private SparseArray<Fragment> fragmentArray;
     private Fragment currentFragment;
-
+    private Fragment favoriteFragment;
+    private Fragment selectedFragment;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +69,31 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+
+
+                switch (menuItem.getItemId()){
+                    case R.id.list:{
+
+                            selectedFragment = SelectedFragment.newInstance();
+                            currentFragment = selectedFragment;
+
+
+                        break; }
+                    case R.id.favorites:{
+
+                            favoriteFragment = FavoritesFragment.newInstance();
+                            currentFragment = favoriteFragment;
+
+                        break; }
+                    case R.id.logoff:{
+                        logoff();
+                    }
+                    break;
+
+
+
+                }
+                replaceFragment(currentFragment);
                 //TODO react according to the selected item menu
                 //We need to display the right fragment according to the menu item selection.
                 //Any created fragment must be cached so it is only created once.
@@ -84,6 +112,17 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
 
 
     private void replaceFragment(Fragment newFragment) {
+
+        DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+
+
+        fragmentManager
+                .beginTransaction()
+                .replace(R.id.fragment_container, newFragment)
+                .commit();
+
+        drawerLayout.closeDrawer(GravityCompat.START);
         //TODO replace fragment inside R.id.fragment_container using a FragmentTransaction
     }
 
@@ -112,3 +151,4 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
     //TODO then save the current state of the fragment, you may read https://stackoverflow.com/questions/15313598/once-for-all-how-to-correctly-save-instance-state-of-fragments-in-back-stack
 
 }
+
