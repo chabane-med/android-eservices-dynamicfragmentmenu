@@ -21,7 +21,7 @@ public class FavoritesFragment extends Fragment {
     public static final String COUNTER_STATE_KEY = "CounterState";
     private View rootView;
     private NavigationInterface navigationInterface;
-    private Integer currentCounter;
+    private Integer currentCounter = 0;
     private Button addButton;
     private Button removeButton;
     private TextView counterTextView;
@@ -55,10 +55,16 @@ public class FavoritesFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         System.out.println("On activity created " + this);
         setupButtons();
+        if(savedInstanceState !=null)
+        {
+            currentCounter = savedInstanceState.getInt(COUNTER_STATE_KEY);
+        }else{
 
-        //TODO if available, restore the state of the current counter
-        //TODO if there is no value to restore, set the counter to default value 4
-        //TODO finally call refreshCounter to update the display
+            currentCounter = 4;
+        }
+
+        refreshCounter();
+
 
     }
 
@@ -94,9 +100,11 @@ public class FavoritesFragment extends Fragment {
         removeButton.setEnabled(currentCounter != 0);
         navigationInterface.updateFavoriteCounter(currentCounter);
     }
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putInt(COUNTER_STATE_KEY, currentCounter);
+    }
 
-
-    //TODO save the state of the counter i.e. the current counter number
-    //TODO in order to restore it later
 
 }

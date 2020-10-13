@@ -29,11 +29,14 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
     private Fragment currentFragment;
     private Fragment favoriteFragment;
     private Fragment selectedFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupNavigationElements();
+
+
 
 
         //TODO Restore instance state
@@ -63,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
         actionBarDrawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
 
         fragmentArray = new SparseArray<>(3);
+        selectedFragment = SelectedFragment.newInstance();
+        fragmentArray.put(0,selectedFragment);
+        favoriteFragment = FavoritesFragment.newInstance();
+        fragmentArray.put(1,favoriteFragment);
 
         navigationView = findViewById(R.id.navigation);
         navigationView.inflateHeaderView(R.layout.navigation_header);
@@ -74,15 +81,27 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                 switch (menuItem.getItemId()){
                     case R.id.list:{
 
+                      /*  if(fragmentArray.get(0).equals(null)){
                             selectedFragment = SelectedFragment.newInstance();
                             currentFragment = selectedFragment;
+                            fragmentArray.put(0,selectedFragment);
 
+                        }else{*/
+
+                            currentFragment = fragmentArray.get(0);
+                       // }
 
                         break; }
                     case R.id.favorites:{
-
-                            favoriteFragment = FavoritesFragment.newInstance();
+                       /* if(fragmentArray.get(1).equals(null)){
+                            favoriteFragment = SelectedFragment.newInstance();
                             currentFragment = favoriteFragment;
+                            fragmentArray.put(1,favoriteFragment);
+
+                        }else{*/
+                            currentFragment = fragmentArray.get(1);
+                      //  }
+
 
                         break; }
                     case R.id.logoff:{
@@ -94,15 +113,6 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
 
                 }
                 replaceFragment(currentFragment);
-                //TODO react according to the selected item menu
-                //We need to display the right fragment according to the menu item selection.
-                //Any created fragment must be cached so it is only created once.
-                //You need to implement this "cache" manually : when you create a fragment based on the menu item,
-                //store it the way you prefer, so when you select this menu item later, you first check if the fragment already exists
-                //and then you use it. If the fragment doesn't exist (it is not cached then) you get an instance of it and store it in the cache.
-
-
-                //TODO when we select logoff, I want the Activity to be closed (and so the Application, as it has only one activity)
 
                 //check in the doc what this boolean means and use it the right way ...
                 return false;
@@ -123,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
                 .commit();
 
         drawerLayout.closeDrawer(GravityCompat.START);
-        //TODO replace fragment inside R.id.fragment_container using a FragmentTransaction
     }
 
     private void logoff() {
@@ -144,6 +153,13 @@ public class MainActivity extends AppCompatActivity implements NavigationInterfa
         ((TextView) counterView.findViewById(R.id.counter_view)).setText(counterContent);
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+
+       // savedInstanceState.putInt(FRAGMENT_NUMBER_KEY,navigationView.getCheckedItem().getOrder());
+       // getSupportFragmentManager().putFragment(savedInstanceState,"myFragment",fragmentArray.get(1));
+    }
 
     //TODO saveInstanceState to handle
     //TODO first save the currently displayed fragment index using the key FRAGMENT_NUMBER_KEY, and getOrder() on the menu item
